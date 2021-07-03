@@ -1,6 +1,7 @@
 package ohm.softa.a13.tweets;
 
 import ohm.softa.a13.tweets.generators.OnlineTweetStreamGenerator;
+import ohm.softa.a13.tweets.generators.OfflineTweetStreamGenerator;
 import ohm.softa.a13.tweets.generators.TweetStreamGenerator;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -17,10 +18,13 @@ public final class TweetStreamFactory {
 
     private final boolean isTwitter4jConfigured;
     private final TweetStreamGenerator onlineTweetStreamGenerator;
+	private final TweetStreamGenerator offlineTweetStreamGenerator;
 
-    private TweetStreamFactory() {
+
+	private TweetStreamFactory() {
         boolean configured = false;
         onlineTweetStreamGenerator = new OnlineTweetStreamGenerator();
+		offlineTweetStreamGenerator = new OfflineTweetStreamGenerator();
         try {
             Properties twitter4jProps = new Properties();
 

@@ -1,8 +1,11 @@
 package ohm.softa.a13.utils;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.*;
+
+import static java.util.stream.Collectors.toSet;
+import static ohm.softa.a13.utils.FunctionalUtils.tryWithResources;
 
 /**
  * Util class to load resources
@@ -11,26 +14,40 @@ import java.util.Scanner;
  */
 public abstract class ResourceUtils {
 
-    private static final String STOP_WORDS_FILE_PATH = "/stopwords.txt";
+	private static final Class<?> THIS_CLASS = ResourceUtils.class;
+	private static final String STOP_WORDS_FILE_PATH = "/stopwords.txt";
 
-    private ResourceUtils() {
+	private ResourceUtils() {
 
-    }
+	}
 
-    /**
-     * Load stop words from the app resources
-     *
-     * @return List of stop words - will be empty if resource file is not found or an error occurred
-     */
-    public static List<String> loadStopWords() {
-        final List<String> stopWords = new LinkedList<>();
-        try (final Scanner scanner = new Scanner(ResourceUtils.class.getResourceAsStream(STOP_WORDS_FILE_PATH))) {
-            while (scanner.hasNext()) {
-                stopWords.add(scanner.next());
-            }
-        } catch (Exception e) {
-            /* ignored */
-        }
-        return stopWords;
-    }
+	/**
+	 * Load stop words from the app resources
+	 *
+	 * @return List of stop words - will be empty if resource file is not found or an error occurred
+	 */
+	public static Set<String> loadStopWords() {
+		final Set<String> stopWords = new HashSet<>();
+		try (final var scanner = new Scanner(THIS_CLASS.getResourceAsStream(STOP_WORDS_FILE_PATH))) {
+			while (scanner.hasNext()) {
+				stopWords.add(scanner.next());
+			}
+		} catch (Exception e) {
+			/* ignored */
+		}
+		return stopWords;
+	}
+
+	/**
+	 * Load stop words from the app resources
+	 *
+	 * @return List of stop words - will be empty if resource file is not found or an error occurred
+	 */
+	public static Set<String> loadStopWordsFunctional() {
+		return tryWithResources(
+			() -> new BufferedReader(new InputStreamReader(THIS_CLASS.getResourceAsStream(STOP_WORDS_FILE_PATH))),
+			br -> br.lines().collect(toSet()),
+			HashSet::new
+		);
+	}
 }
